@@ -55,16 +55,40 @@
 
 
                 <Button
-                    android:id="@+id/btn_start_measure_all"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/btn_start_measure_heartrate"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Iniciar mediciones" />
+                    android:text="Iniciar Ritmo Cardiaco" />
+
+                <Button
+                    android:id="@+id/btn_start_measure_pressure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Iniciar Presión Arterial" />
+
+                <Button
+                    android:id="@+id/btn_start_measure_bloodoxygen"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Iniciar Saturación Oxígeno" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="5dp"
+                    android:background="?android:attr/listDivider" />
+
+                <Button
+                    android:id="@+id/btn_start_measure_all"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Iniciar todas las mediciones" />
 
                 <Button
                     android:id="@+id/btn_stop_measure_all"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Parar mediciones" />
+                    android:text="Parar todas las mediciones" />
 
 
                 <LinearLayout

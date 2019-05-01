@@ -63,9 +63,9 @@ public class ScanActivity extends AppCompatActivity {
                 Log.i("ConnectedDevices: ", "paired device: " + deviceName + " at " + macAddress);
                 // do what you need/want this these list items
 
-                if ("EA:0D:61:5A:16:B1".equals(macAddress)) {
+                /*if ("EA:0D:61:5A:16:B1".equals(macAddress)) {
                     fastEnter(macAddress);
-                }
+                }*/
             }
         }
     }

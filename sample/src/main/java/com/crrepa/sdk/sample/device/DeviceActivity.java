@@ -104,6 +104,10 @@ public class DeviceActivity extends AppCompatActivity {
     public long tiempo;
     public String medidaActual = "";
 
+    private final int MODO_COMPLETO = 0;
+    private final int MODO_SENCILLO = 1;
+    private int modoEjecucion = MODO_COMPLETO;
+
     private String bandFirmwareVersion;
 
     @Override
@@ -190,6 +194,9 @@ public class DeviceActivity extends AppCompatActivity {
 
 
     @OnClick({
+            R.id.btn_start_measure_heartrate,
+            R.id.btn_start_measure_pressure,
+            R.id.btn_start_measure_bloodoxygen,
             R.id.btn_start_measure_all,
             R.id.btn_stop_measure_all})
     public void onViewClicked(View view) {
@@ -202,19 +209,32 @@ public class DeviceActivity extends AppCompatActivity {
 
         switch (view.getId()) {
 
+            case R.id.btn_start_measure_heartrate:
+                this.modoEjecucion = MODO_SENCILLO;
+                medidaActual="RATE";
+                Log.d(TAG, "PRESS: " + medidaActual);
+                mBleConnection.startMeasureOnceHeartRate();
+                break;
+
+            case R.id.btn_start_measure_pressure:
+                this.modoEjecucion = MODO_SENCILLO;
+                medidaActual="PRESSURE";
+                Log.d(TAG, "PRESS: " + medidaActual);
+                mBleConnection.startMeasureBloodPressure();
+                break;
+
+            case R.id.btn_start_measure_bloodoxygen:
+                this.modoEjecucion = MODO_SENCILLO;
+                medidaActual="OXYGEN";
+                Log.d(TAG, "PRESS: " + medidaActual);
+                mBleConnection.startMeasureBloodOxygen();
+                break;
+
             case R.id.btn_start_measure_all:
+                this.modoEjecucion = MODO_COMPLETO;
                 tiempo = System.currentTimeMillis();
                 medidaActual="RATE";
                 mBleConnection.startMeasureOnceHeartRate();
-                int TIME = 30000; //5000 ms (5 Seconds)
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d(TAG, "PRESS: " + (System.currentTimeMillis() - tiempo )/1000 +" S");
-                        medidaActual="PRESSURE";
-                        mBleConnection.startMeasureBloodPressure();
-                    }
-                }, TIME);
                 break;
 
             case R.id.btn_stop_measure_all:
@@ -247,17 +267,36 @@ public class DeviceActivity extends AppCompatActivity {
         public void onOnceMeasureComplete(int rate) {
             Log.d("PULSERA", "onOnceMeasureComplete: " + rate);
             Log.d(TAG, "onConnectionStateChange: " + (System.currentTimeMillis() - tiempo )/1000 +" S");
+
+            if (modoEjecucion == MODO_COMPLETO) {
+                /*int TIME = 3000; // 3000 ms (3 Seconds)
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        medidaActual="PRESSURE";
+                        Log.d(TAG, "RUNNING: " + medidaActual);
+                        mBleConnection.startMeasureBloodPressure();
+                    }
+                }, TIME);*/
+
+                mBleConnection.stopMeasureOnceHeartRate();
+                medidaActual="PRESSURE";
+                Log.d(TAG, "RUNNING: " + medidaActual);
+                mBleConnection.startMeasureBloodPressure();
+            }
         }
 
 
         @Override
         public void onMeasureComplete(CRPHeartRateInfo info) {
+            Log.d("PULSERA", "onMeasureComplete");
             if (info != null && info.getMeasureData() != null) {
                 for (Integer integer : info.getMeasureData()) {
                     Log.d("PULSERA", "onMeasureComplete: " + integer);
 
                 }
             }
+
         }
 
         @Override
@@ -283,8 +322,12 @@ public class DeviceActivity extends AppCompatActivity {
             Log.d("PULSERA", "sbp: " + sbp + ",dbp: " + dbp);
             updateTextView(tvBloodPressure,
                     String.format(getString(R.string.blood_pressure), sbp, dbp));
-            mBleConnection.startMeasureBloodOxygen();
-            medidaActual="OXYGEN";
+
+            if (modoEjecucion == MODO_COMPLETO) {
+                medidaActual="OXYGEN";
+                mBleConnection.startMeasureBloodOxygen();
+            }
+
         }
 
     };
